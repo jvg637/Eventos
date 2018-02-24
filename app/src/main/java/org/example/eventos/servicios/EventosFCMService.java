@@ -1,16 +1,10 @@
-package org.example.eventos;
-
-import android.app.Notification;
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
+package org.example.eventos.servicios;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import static org.example.eventos.Comun.mostrarDialogo;
-import static org.example.eventos.Comun.mostrarDialogo2;
+import static org.example.eventos.util.Comun.mostrarDialogo;
+import static org.example.eventos.util.Comun.mostrarDialogo2;
 
 /**
  * Created by jvg63 on 17/02/2018.

@@ -1,4 +1,4 @@
-package org.example.eventos;
+package org.example.eventos.actividades;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,9 +10,10 @@ import android.widget.CompoundButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import static org.example.eventos.Comun.eliminarIdRegistro;
-import static org.example.eventos.Comun.guardarIdRegistro;
-import static org.example.eventos.Comun.mostrarDialogo;
+import org.example.eventos.R;
+
+import static org.example.eventos.util.Comun.eliminarIdRegistro;
+import static org.example.eventos.util.Comun.guardarIdRegistro;
 
 /**
  * Created by jvg63 on 18/02/2018.

@@ -1,4 +1,4 @@
-package org.example.eventos;
+package org.example.eventos.actividades;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,14 +11,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.example.eventos.R;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static org.example.eventos.Comun.API_KEY;
-import static org.example.eventos.Comun.ID_PROYECTO;
-import static org.example.eventos.Comun.URL_SERVIDOR;
+import static org.example.eventos.util.Comun.API_KEY;
+import static org.example.eventos.util.Comun.ID_PROYECTO;
+import static org.example.eventos.util.Comun.URL_SERVIDOR;
 
 
 /**

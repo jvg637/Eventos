@@ -1,4 +1,4 @@
-package org.example.eventos;
+package org.example.eventos.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,11 +15,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by jvg63 on 17/02/2018.
+ * Created by jvg63 on 24/02/2018.
  */
 
 public class Comun {
-    static void mostrarDialogo(final Context context
+    public static void mostrarDialogo(final Context context
             , final String mensaje) {
         Intent intent = new Intent(context, Dialogo.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -25,7 +27,7 @@ public class Comun {
         context.startActivity(intent);
     }
 
-    static void mostrarDialogo2(final Context context
+    public static void mostrarDialogo2(final Context context
             , final String mensaje, String evento) {
         Intent intent = new Intent(context, Dialogo.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -36,10 +38,10 @@ public class Comun {
     }
 
 
-//    static final String URL_SERVIDOR = "http://cursoandroid.hol.es/notificaciones/";
+    //    static final String URL_SERVIDOR = "http://cursoandroid.hol.es/notificaciones/";
     public static final String URL_SERVIDOR = "http://eventosjvg.esy.es/";
-    static String ID_PROYECTO = "eventos-eae83";
-    static String API_KEY = "AAAAIDy5Iuo:APA91bE3QEymE6zURi353tEw0kYAp_DBOIPWl7R5ft2KwSvFoQi_-c46VErwX8WkfgtAmz-S8VoiKA-ozPROcvUx1RzvIoBGsOOppcKTHTXi4MBsp8W21CHcng3nkD-0Qhy34qqaDuJ0";
+    public static String ID_PROYECTO = "eventos-eae83";
+    public static String API_KEY = "AAAAIDy5Iuo:APA91bE3QEymE6zURi353tEw0kYAp_DBOIPWl7R5ft2KwSvFoQi_-c46VErwX8WkfgtAmz-S8VoiKA-ozPROcvUx1RzvIoBGsOOppcKTHTXi4MBsp8W21CHcng3nkD-0Qhy34qqaDuJ0";
 
 
     String idRegistro = "";
@@ -149,4 +151,12 @@ public class Comun {
         public void onPostExecute(String res) {
         }
     }
+
+    public static FirebaseStorage storage;
+    public static StorageReference storageRef;
+
+    public static StorageReference getStorageReference() {
+        return storageRef;
+    }
 }
+

@@ -1,6 +1,8 @@
-package org.example.eventos;
+package org.example.eventos.modelo;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.example.eventos.modelo.Evento;
 
 /**
  * Created by jvg63 on 17/02/2018.

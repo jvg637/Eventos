@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ActividadPrincipal">
+    tools:context=".actividades.ActividadPrincipal">
     <item
         android:id="@+id/action_temas"
         android:orderInCategory="100"
@@ -11,5 +11,16 @@
         android:id="@+id/action_enviar_evento"
         android:orderInCategory="101"
         android:title="Enviar Evento"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_share_photo"
+        android:orderInCategory="102"
+        android:title="Compartir foto cámara"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_share_reto_estoy_aqui"
+        android:orderInCategory="103"
+        android:title="Reto “Estoy aquí” "
         app:showAsAction="never" />
 </menu>

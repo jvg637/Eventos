@@ -1,11 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -22,30 +22,33 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/imgImagen"
             android:layout_weight="0.70"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgImagen"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txtCiudad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtEvento"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/imgImagen" />
+            android:layout_toRightOf="@+id/imgImagen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgImagen"
+            app:layout_constraintTop_toBottomOf="@+id/txtEvento" />
 
         <TextView
             android:id="@+id/txtFecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtCiudad"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/imgImagen"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textStyle="italic" />
-    </RelativeLayout>
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgImagen"
+            app:layout_constraintTop_toBottomOf="@+id/txtCiudad" />
+    </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

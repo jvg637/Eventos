@@ -1,4 +1,4 @@
-package org.example.eventos;
+package org.example.eventos.actividades;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
+import org.example.eventos.modelo.Evento;
+import org.example.eventos.R;
 
 import java.io.InputStream;
 

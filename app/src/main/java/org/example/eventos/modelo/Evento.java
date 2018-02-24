@@ -1,4 +1,4 @@
-package org.example.eventos;
+package org.example.eventos.modelo;
 
 /**
  * Created by jvg63 on 17/02/2018.

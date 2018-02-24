@@ -1,27 +1,36 @@
-package org.example.eventos;
+package org.example.eventos.actividades;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
 
-import static org.example.eventos.Comun.mostrarDialogo;
-import static org.example.eventos.EventosFirestore.EVENTOS;
-import static org.example.eventos.EventosFirestore.crearEventos;
+import org.example.eventos.R;
+import org.example.eventos.modelo.Evento;
+import org.example.eventos.util.Comun;
+
+import static org.example.eventos.modelo.EventosFirestore.EVENTOS;
+import static org.example.eventos.util.Comun.mostrarDialogo;
+import static org.example.eventos.util.Comun.storage;
 
 public class ActividadPrincipal extends AppCompatActivity {
     private AdaptadorEventos adaptador;
@@ -81,6 +90,44 @@ public class ActividadPrincipal extends AppCompatActivity {
             }
         });
 
+        Comun.storage = FirebaseStorage.getInstance();
+        Comun.storageRef = storage.getReferenceFromUrl("gs://eventos-eae83.appspot.com");
+
+        // Expose
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        ActivityCompat.requestPermissions(ActividadPrincipal.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Toast.makeText(ActividadPrincipal.this, "Permiso denegado para mantener escribir en el almacenamiento.", Toast.LENGTH_SHORT).show();
+                }
+
+                ActivityCompat.requestPermissions(ActividadPrincipal.this, new String[]{android.Manifest.permission.CAMERA}, 2);
+                return;
+            }
+
+            case 2: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Toast.makeText(ActividadPrincipal.this, "Permiso denegado para acceder a la camara", Toast.LENGTH_SHORT).show();
+                }
+                ActivityCompat.requestPermissions(ActividadPrincipal.this, new String[]{android.Manifest.permission.GET_ACCOUNTS}, 3);
+                return;
+            }
+
+            case 3: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Toast.makeText(ActividadPrincipal.this, "Permiso denegado para acceder a las cuentas", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 
     @Override
@@ -98,6 +145,16 @@ public class ActividadPrincipal extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_enviar_evento) {
             Intent intent = new Intent(getBaseContext(), EnviarEvento.class);
+            startActivity(intent);
+            return true;
+        }else if (id == R.id.action_share_photo) {
+            Intent intent = new Intent(getBaseContext(), ShareFotoDrive.class);
+            intent.putExtra("accion", "carpeta_compartirda");
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_share_reto_estoy_aqui) {
+            Intent intent = new Intent(getBaseContext(), ShareFotoDrive.class);
+            intent.putExtra("accion", "reto_estoy_aqui");
             startActivity(intent);
             return true;
         }
@@ -154,8 +211,6 @@ public class ActividadPrincipal extends AppCompatActivity {
     public static Context getAppContext() {
         return ActividadPrincipal.getCurrentContext();
     }
-
-
 
 
 }
