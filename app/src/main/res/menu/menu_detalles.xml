@@ -34,7 +34,13 @@
 
     <item
         android:id="@+id/action_deleteFile"
-        android:orderInCategory="103"
+        android:orderInCategory="104"
         android:title="Borrar Imagen"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_acercaDe"
+        android:orderInCategory="105"
+        android:title="Acerca de"
         app:showAsAction="never" />
 </menu>

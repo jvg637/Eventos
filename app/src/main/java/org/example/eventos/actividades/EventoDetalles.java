@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,6 +36,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.example.eventos.EventosAplicacion;
 import org.example.eventos.R;
 import org.example.eventos.util.DialogoConfirmacion;
 
@@ -75,6 +77,9 @@ public class EventoDetalles extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         evento = extras.getString("evento");
         if (evento == null) evento = "";
+
+        ((EventosAplicacion)getApplication()).getFirebaseAnalytics().setUserProperty("evento_detalle", evento);
+
         registros = FirebaseFirestore.getInstance().collection("eventos");
         registros.document(evento).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -144,8 +149,17 @@ public class EventoDetalles extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         View vista = (View) findViewById(android.R.id.content);
         int id = item.getItemId();
+
+        FirebaseAnalytics mFirebaseAnalytics = ((EventosAplicacion) getApplication()).getFirebaseAnalytics();
+
+        Bundle bundle = new Bundle();
         switch (id) {
             case R.id.action_putData:
+
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "subir_imagen");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+
+
                 if (hayImagen) {
                     subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA, null);
                 } else {
@@ -153,26 +167,49 @@ public class EventoDetalles extends AppCompatActivity {
                 }
                 break;
             case R.id.action_streamData:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "subir_stream");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+
                 seleccionarFotografiaDispositivo(vista, SOLICITUD_SELECCION_STREAM);
                 break;
             case R.id.action_putFile:
+
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "subir_fichero");
+                mFirebaseAnalytics.logEvent("menus", bundle);
                 seleccionarFotografiaDispositivo(vista, SOLICITUD_SELECCION_PUTFILE);
                 break;
             case R.id.action_getFile:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "descargar_fichero");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+
                 descargarDeFirebaseStorage(evento);
                 break;
             case R.id.action_fotografiasDrive:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "fotografias_drive");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+
                 Intent intent = new Intent(getBaseContext(), FotografiasDrive.class);
                 intent.putExtra("evento", evento);
                 startActivity(intent);
                 break;
             case R.id.action_deleteFile:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "borrar_imagen");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+
                 if (hayImagen) {
                     borrarDeFirebaseStorage();
                 } else {
                     mostrarDialogo(getApplicationContext(), "Actualmente no hay cargada ninguna imagen!");
                 }
                 break;
+            case R.id.action_acercaDe:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "acerca_de");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+                Intent intentWeb = new Intent(getBaseContext(), EventosWeb.class);
+                intentWeb.putExtra("evento", evento);
+                startActivity(intentWeb);
+                break;
+
 
         }
         return super.onOptionsItemSelected(item);

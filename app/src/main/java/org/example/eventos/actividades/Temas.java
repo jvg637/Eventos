@@ -128,6 +128,7 @@ public class Temas extends AppCompatActivity {
                         tema, false);
             }
         }
+
     }
 
     public static void guardarSuscripcionATemaEnPreferencias(

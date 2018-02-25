@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +47,7 @@ import java.util.Locale;
  */
 
 public class FotografiasDrive extends AppCompatActivity {
-    public TextView mDisplay;
+    static WebView mDisplay;
     String evento;
 
     @Override
@@ -64,12 +65,12 @@ public class FotografiasDrive extends AppCompatActivity {
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean inicializa = intent.getExtras().getBoolean("inicializa", false);
+//            boolean inicializa = intent.getExtras().getBoolean("inicializa", false);
             String nuevoMensaje = intent.getExtras().getString("mensaje");
-            if (!inicializa)
-                mDisplay.append(nuevoMensaje + "\n");
-            else
-                mDisplay.setText("");
+//            if (!inicializa)
+//                mDisplay.append(nuevoMensaje + "\n");
+//            else
+//                mDisplay.setText("");
         }
     };
 
@@ -83,10 +84,12 @@ public class FotografiasDrive extends AppCompatActivity {
                 public void run() {
                     try {
                         mostrarCarga(FotografiasDrive.this, "Listando archivos...");
+                        vaciarLista(getBaseContext());
                         FileList ficheros = servicio.files().list().setQ("'" + idCarpetaEvento + "' in parents").setFields("*").execute();
-                        mostrarTexto(getBaseContext(),"", true);
+//                        mostrarTexto(getBaseContext(), "", true);
                         for (File fichero : ficheros.getFiles()) {
-                            mostrarTexto(getBaseContext(), fichero.getOriginalFilename());
+//                            mostrarTexto(getBaseContext(), fichero.getOriginalFilename());
+                            addItem(FotografiasDrive.this, fichero.getOriginalFilename(),fichero.getThumbnailLink());
                         }
                         mostrarMensaje(FotografiasDrive.this, "¡Archivos listados!");
                         ocultarCarga(FotografiasDrive.this);
@@ -121,7 +124,11 @@ public class FotografiasDrive extends AppCompatActivity {
         setContentView(R.layout.fotografias_drive);
 
         registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
-        mDisplay = (TextView) findViewById(R.id.display);
+//        mDisplay = (TextView) findViewById(R.id.display);
+        mDisplay = (WebView) findViewById(R.id.display);
+        mDisplay.getSettings().setJavaScriptEnabled(true);
+        mDisplay.getSettings().setBuiltInZoomControls(false);
+        mDisplay.loadUrl("file:///android_asset/fotografias.html");
 
         Bundle extras = getIntent().getExtras();
         evento = extras.getString("evento");
@@ -389,4 +396,20 @@ public class FotografiasDrive extends AppCompatActivity {
 
     private String idCarpeta = "";
     private String idCarpetaEvento = "";
+
+    static void addItem(final Context context, final String fichero, final String imagen) {
+        carga.post(new Runnable() {
+            public void run() {
+                mDisplay.loadUrl("javascript:add(\"" + fichero + "\",\"" + imagen + "\");");
+            }
+        });
+    }
+
+    static void vaciarLista(final Context context) {
+        carga.post(new Runnable() {
+            public void run() {
+                mDisplay.loadUrl("javascript:vaciar()");
+            }
+        });
+    }
 }

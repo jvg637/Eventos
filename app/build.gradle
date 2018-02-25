@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.google.api-client:google-api-client-android:1.17.0-rc'
     implementation 'com.google.apis:google-api-services-drive:v3-rev52-1.22.0'
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
-
+    implementation 'com.google.firebase:firebase-core:11.8.0'
 }
 apply plugin: 'com.google.gms.google-services'
 

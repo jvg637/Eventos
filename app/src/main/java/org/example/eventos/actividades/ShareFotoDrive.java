@@ -3,17 +3,14 @@ package org.example.eventos.actividades;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -41,16 +38,16 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-
-import static org.example.eventos.actividades.FotografiasDrive.DISPLAY_MESSAGE_ACTION;
 
 /**
  * Created by jvg63 on 19/02/2017.
  */
 
 public class ShareFotoDrive extends AppCompatActivity {
-    public TextView mDisplay;
+//    public TextView mDisplay;
+static WebView mDisplay;
     String evento;
     private String idCarpeta;
     ////https://drive.google.com/drive/folders/0B8h9K5NvlyIAOGNfNTF0ZHhhd3M?usp=sharing
@@ -60,7 +57,7 @@ public class ShareFotoDrive extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mHandleMessageReceiver);
+//        unregisterReceiver(mHandleMessageReceiver);
         super.onDestroy();
     }
 
@@ -72,15 +69,19 @@ public class ShareFotoDrive extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
-        mDisplay = (TextView) findViewById(R.id.display);
+//        registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
+//        mDisplay = (TextView) findViewById(R.id.display);
+        mDisplay = (WebView) findViewById(R.id.display);
+        mDisplay.getSettings().setJavaScriptEnabled(true);
+        mDisplay.getSettings().setBuiltInZoomControls(false);
+        mDisplay.loadUrl("file:///android_asset/fotografias.html");
 
         credencial = GoogleAccountCredential.usingOAuth2(this, Arrays.asList(DriveScopes.DRIVE));
 
         SharedPreferences prefs = getSharedPreferences("Preferencias", Context.MODE_PRIVATE);
         nombreCuenta = prefs.getString("nombreCuenta", null);
 
-        noAutoriza = prefs.getBoolean("noAutoriza", false);
+//        noAutoriza = prefs.getBoolean("noAutoriza", false);
 
 
         Bundle extras = getIntent().getExtras();
@@ -96,7 +97,7 @@ public class ShareFotoDrive extends AppCompatActivity {
             setTitle("Subir fot. carp. compartida");
         }
 
-        if (!noAutoriza) {
+//        if (!noAutoriza) {
             if (nombreCuenta == null) {
                 PedirCredenciales();
             } else {
@@ -104,7 +105,7 @@ public class ShareFotoDrive extends AppCompatActivity {
                 servicio = obtenerServicioDrive(credencial);
                 listarFicheros();
             }
-        }
+//        }
     }
 
     @Override
@@ -113,28 +114,28 @@ public class ShareFotoDrive extends AppCompatActivity {
         setIntent(intent);
     }
 
-    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean inicializa = intent.getExtras().getBoolean("inicializa", false);
-            String nuevoMensaje = intent.getExtras().getString("mensaje");
-            if (!inicializa)
-                mDisplay.append(nuevoMensaje + "\n");
-            else
-                mDisplay.setText("");
-        }
-    };
+//    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            boolean inicializa = intent.getExtras().getBoolean("inicializa", false);
+//            String nuevoMensaje = intent.getExtras().getString("mensaje");
+////            if (!inicializa)
+////                mDisplay.append(nuevoMensaje + "\n");
+////            else
+////                mDisplay.setText("");
+//        }
+//    };
+//
+//    static void mostrarTexto(Context contexto, String mensaje) {
+//        mostrarTexto(contexto, mensaje, false);
+//    }
 
-    static void mostrarTexto(Context contexto, String mensaje) {
-        mostrarTexto(contexto, mensaje, false);
-    }
-
-    static void mostrarTexto(Context contexto, String mensaje, boolean inicializa) {
-        Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
-        intent.putExtra("mensaje", mensaje);
-        intent.putExtra("inicializa", inicializa);
-        contexto.sendBroadcast(intent);
-    }
+//    static void mostrarTexto(Context contexto, String mensaje, boolean inicializa) {
+//        Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
+//        intent.putExtra("mensaje", mensaje);
+//        intent.putExtra("inicializa", inicializa);
+//        contexto.sendBroadcast(intent);
+//    }
 
 
     private void PedirCredenciales() {
@@ -345,13 +346,15 @@ public class ShareFotoDrive extends AppCompatActivity {
             public void run() {
                 try {
                     mostrarCarga(ShareFotoDrive.this, "Listando archivos...");
+                    vaciarLista(getBaseContext());
                     FileList ficheros = servicio.files().list().setQ("'" + idCarpeta + "' in parents").setFields("*").execute();
-                    mostrarTexto(getBaseContext(),"", true);
-                    StringBuilder tmpFicheros = new StringBuilder();
-                    for (File fichero : ficheros.getFiles()) {
-                        tmpFicheros.append( fichero.getOriginalFilename() + "\n");
+//                  mostrarTexto(getBaseContext(),"", true);
+                    List<File> files = ficheros.getFiles();
+                    Log.d("ELEMENTOS", "" + ficheros.getFiles().size());
+                    for (File fichero : files) {
+//                        mostrarTexto(getBaseContext(), fichero.getOriginalFilename());
+                        addItem(ShareFotoDrive.this, fichero.getOriginalFilename(),fichero.getThumbnailLink());
                     }
-                    mostrarTexto(getBaseContext(), tmpFicheros.toString());
                     mostrarMensaje(ShareFotoDrive.this, "¡Archivos listados!");
                     ocultarCarga(ShareFotoDrive.this);
                 } catch (UserRecoverableAuthIOException e) {
@@ -366,6 +369,22 @@ public class ShareFotoDrive extends AppCompatActivity {
         });
         t.start();
         }
+    }
+
+    static void addItem(final Context context, final String fichero, final String imagen) {
+        carga.post(new Runnable() {
+            public void run() {
+                mDisplay.loadUrl("javascript:add(\"" + fichero + "\",\"" + imagen + "\");");
+            }
+        });
+    }
+
+    static void vaciarLista(final Context context) {
+        carga.post(new Runnable() {
+            public void run() {
+                mDisplay.loadUrl("javascript:vaciar()");
+            }
+        });
     }
 
     public void hacerFoto(View v) {
