@@ -46,8 +46,8 @@ import java.util.Locale;
  */
 
 public class ShareFotoDrive extends AppCompatActivity {
-//    public TextView mDisplay;
-static WebView mDisplay;
+    //    public TextView mDisplay;
+    static WebView mDisplay;
     String evento;
     private String idCarpeta;
     ////https://drive.google.com/drive/folders/0B8h9K5NvlyIAOGNfNTF0ZHhhd3M?usp=sharing
@@ -98,13 +98,13 @@ static WebView mDisplay;
         }
 
 //        if (!noAutoriza) {
-            if (nombreCuenta == null) {
-                PedirCredenciales();
-            } else {
-                credencial.setSelectedAccountName(nombreCuenta);
-                servicio = obtenerServicioDrive(credencial);
-                listarFicheros();
-            }
+        if (nombreCuenta == null) {
+            PedirCredenciales();
+        } else {
+            credencial.setSelectedAccountName(nombreCuenta);
+            servicio = obtenerServicioDrive(credencial);
+            listarFicheros();
+        }
 //        }
     }
 
@@ -184,7 +184,7 @@ static WebView mDisplay;
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
                     uriFichero = Uri.fromFile(new java.io.File(cursor.getString(column_index)));
-                    guardarFicheroEnDrive();
+                    guardarFicheroEnDrive(this.findViewById(android.R.id.content));
                 }
                 break;
 
@@ -206,14 +206,14 @@ static WebView mDisplay;
                 break;
             case SOLICITUD_HACER_FOTOGRAFIA:
                 if (resultCode == Activity.RESULT_OK) {
-                    guardarFicheroEnDrive();
+                    guardarFicheroEnDrive(this.findViewById(android.R.id.content));
                 }
                 break;
 
 
             case SOLICITUD_AUTORIZACION:
                 if (resultCode == Activity.RESULT_OK) {
-                    guardarFicheroEnDrive();
+                    guardarFicheroEnDrive(this.findViewById(android.R.id.content));
                 } else {
                     noAutoriza = true;
                     SharedPreferences prefs = getSharedPreferences("Preferencias", Context.MODE_PRIVATE);
@@ -227,7 +227,7 @@ static WebView mDisplay;
         }
     }
 
-    private void guardarFicheroEnDrive() {
+    private void guardarFicheroEnDrive(final View view) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -252,11 +252,11 @@ static WebView mDisplay;
 
                     Log.d("traza", "test " + credencial.getSelectedAccountName());
                     File ficheroSubido = servicio.files().create(ficheroDrive, contenido).setFields("id").execute();
-                    ocultarCarga(ShareFotoDrive.this);
                     if (ficheroSubido.getId() != null) {
                         mostrarMensaje(ShareFotoDrive.this, "¡Foto subida!");
                         listarFicheros();
                     }
+                    ocultarCarga(ShareFotoDrive.this);
                 } catch (UserRecoverableAuthIOException e) {
                     ocultarCarga(ShareFotoDrive.this);
                     startActivityForResult(e.getIntent(), SOLICITUD_AUTORIZACION);
@@ -337,37 +337,43 @@ static WebView mDisplay;
     private static Uri uriFichero;
 
     private static final String DISPLAY_MESSAGE_ACTION = "org.example.eventos.DISPLAY_MESSAGE2";
+
     public void listarFicheros() {
         if (nombreCuenta == null) {
             mostrarMensaje(this, "Debes seleccionar una cuenta de Google Drive");
         } else {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mostrarCarga(ShareFotoDrive.this, "Listando archivos...");
-                    vaciarLista(getBaseContext());
-                    FileList ficheros = servicio.files().list().setQ("'" + idCarpeta + "' in parents").setFields("*").execute();
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mostrarCarga(ShareFotoDrive.this, "Listando archivos...");
+                        vaciarLista(getBaseContext());
+                        try {
+                            Thread.currentThread().sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        FileList ficheros = servicio.files().list().setQ("'" + idCarpeta + "' in parents").setFields("*").execute();
 //                  mostrarTexto(getBaseContext(),"", true);
-                    List<File> files = ficheros.getFiles();
-                    Log.d("ELEMENTOS", "" + ficheros.getFiles().size());
-                    for (File fichero : files) {
+                        List<File> files = ficheros.getFiles();
+                        Log.d("ELEMENTOS", "" + ficheros.getFiles().size());
+                        for (File fichero : files) {
 //                        mostrarTexto(getBaseContext(), fichero.getOriginalFilename());
-                        addItem(ShareFotoDrive.this, fichero.getOriginalFilename(),fichero.getThumbnailLink());
+                            addItem(ShareFotoDrive.this, fichero.getOriginalFilename(), fichero.getThumbnailLink());
+                        }
+                        mostrarMensaje(ShareFotoDrive.this, "¡Archivos listados!");
+                        ocultarCarga(ShareFotoDrive.this);
+                    } catch (UserRecoverableAuthIOException e) {
+                        ocultarCarga(ShareFotoDrive.this);
+                        startActivityForResult(e.getIntent(), SOLICITUD_AUTORIZACION);
+                    } catch (IOException e) {
+                        mostrarMensaje(ShareFotoDrive.this, "Error;" + e.getMessage());
+                        ocultarCarga(ShareFotoDrive.this);
+                        e.printStackTrace();
                     }
-                    mostrarMensaje(ShareFotoDrive.this, "¡Archivos listados!");
-                    ocultarCarga(ShareFotoDrive.this);
-                } catch (UserRecoverableAuthIOException e) {
-                    ocultarCarga(ShareFotoDrive.this);
-                    startActivityForResult(e.getIntent(), SOLICITUD_AUTORIZACION);
-                } catch (IOException e) {
-                    mostrarMensaje(ShareFotoDrive.this, "Error;" + e.getMessage());
-                    ocultarCarga(ShareFotoDrive.this);
-                    e.printStackTrace();
                 }
-            }
-        });
-        t.start();
+            });
+            t.start();
         }
     }
 
