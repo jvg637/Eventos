@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -33,6 +34,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
+import org.example.eventos.BuildConfig;
 import org.example.eventos.R;
 
 import java.io.IOException;
@@ -89,7 +91,7 @@ public class FotografiasDrive extends AppCompatActivity {
 //                        mostrarTexto(getBaseContext(), "", true);
                         for (File fichero : ficheros.getFiles()) {
 //                            mostrarTexto(getBaseContext(), fichero.getOriginalFilename());
-                            addItem(FotografiasDrive.this, fichero.getOriginalFilename(),fichero.getThumbnailLink());
+                            addItem(FotografiasDrive.this, fichero.getOriginalFilename(), fichero.getThumbnailLink());
                         }
                         mostrarMensaje(FotografiasDrive.this, "¡Archivos listados!");
                         ocultarCarga(FotografiasDrive.this);
@@ -128,7 +130,8 @@ public class FotografiasDrive extends AppCompatActivity {
         mDisplay = (WebView) findViewById(R.id.display);
         mDisplay.getSettings().setJavaScriptEnabled(true);
         mDisplay.getSettings().setBuiltInZoomControls(false);
-        mDisplay.loadUrl("file:///android_asset/fotografias.html");
+//        mDisplay.loadUrl("file:///android_asset/fotografias.html");
+        mDisplay.loadUrl("https://eventos-eae83.firebaseapp.com/fotografias.html");
 
         Bundle extras = getIntent().getExtras();
         evento = extras.getString("evento");
@@ -208,6 +211,8 @@ public class FotografiasDrive extends AppCompatActivity {
             public void run() {
                 dialogo = new ProgressDialog(context);
                 dialogo.setMessage(mensaje);
+//                progresoSubida.setCancelable(true);
+                dialogo.setCanceledOnTouchOutside(false);
                 dialogo.show();
             }
         });
@@ -287,20 +292,22 @@ public class FotografiasDrive extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    mostrarCarga(FotografiasDrive.this, "Subiendo imagen...");
-                    java.io.File ficheroJava = new java.io.File(uriFichero.getPath());
-                    FileContent contenido = new FileContent("image/jpeg", ficheroJava);
-                    File ficheroDrive = new File();
-                    ficheroDrive.setName(ficheroJava.getName());
-                    ficheroDrive.setMimeType("image/jpeg");
-                    ficheroDrive.setParents(Collections.singletonList(idCarpetaEvento));
+                    if (uriFichero != null) {
+                        mostrarCarga(FotografiasDrive.this, "Subiendo imagen...");
+                        java.io.File ficheroJava = new java.io.File(uriFichero.getPath());
+                        FileContent contenido = new FileContent("image/jpeg", ficheroJava);
+                        File ficheroDrive = new File();
+                        ficheroDrive.setName(ficheroJava.getName());
+                        ficheroDrive.setMimeType("image/jpeg");
+                        ficheroDrive.setParents(Collections.singletonList(idCarpetaEvento));
 
-                    File ficheroSubido = servicio.files().create(ficheroDrive, contenido).setFields("id").execute();
-                    if (ficheroSubido.getId() != null) {
-                        mostrarMensaje(FotografiasDrive.this, "¡Foto subida!");
-                        listarFicheros();
+                        File ficheroSubido = servicio.files().create(ficheroDrive, contenido).setFields("id").execute();
+                        if (ficheroSubido.getId() != null) {
+                            mostrarMensaje(FotografiasDrive.this, "¡Foto subida!");
+                            listarFicheros();
+                        }
+                        ocultarCarga(FotografiasDrive.this);
                     }
-                    ocultarCarga(FotografiasDrive.this);
                 } catch (UserRecoverableAuthIOException e) {
                     ocultarCarga(FotografiasDrive.this);
                     startActivityForResult(e.getIntent(), SOLICITUD_AUTORIZACION);
@@ -318,13 +325,42 @@ public class FotografiasDrive extends AppCompatActivity {
         if (nombreCuenta == null) {
             mostrarMensaje(this, "Debes seleccionar una cuenta de Google Drive");
         } else {
-            String mediaStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath();
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
-            uriFichero = Uri.fromFile(new java.io.File(mediaStorageDir + java.io.File.separator + "IMG_" + timeStamp + ".jpg"));
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriFichero);
-            startActivityForResult(cameraIntent, SOLICITUD_HACER_FOTOGRAFIA);
+            Intent takePictureIntent =
+                    new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                java.io.File ficheroFoto = null;
+                try {
+                    ficheroFoto = crearFicheroImagen();
+                    if (ficheroFoto != null) {
+                        Uri fichero = FileProvider.getUriForFile(
+                                FotografiasDrive.this,
+                                BuildConfig.APPLICATION_ID + ".provider",
+                                ficheroFoto);
+                        uriFichero =
+                                Uri.parse("content://" + ficheroFoto.getAbsolutePath());
+                        takePictureIntent.putExtra(
+                                MediaStore.EXTRA_OUTPUT, fichero);
+                        startActivityForResult(takePictureIntent,
+                                SOLICITUD_HACER_FOTOGRAFIA);
+                    }
+                } catch (IOException ex) {
+                    return;
+                }
+            }
         }
+    }
+
+    private java.io.File crearFicheroImagen() throws IOException {
+        String tiempo = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+        String nombreFichero = "JPEG_" + tiempo + "_";
+        java.io.File dirAlmacenaje =
+                new java.io.File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DCIM), "Camera");
+        java.io.File ficheroImagen = java.io.File.createTempFile(
+                nombreFichero,
+                ".jpg", dirAlmacenaje);
+        return ficheroImagen;
     }
 
     public void seleccionarFoto(View v) {

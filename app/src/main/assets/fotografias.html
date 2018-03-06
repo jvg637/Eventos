@@ -1,11 +1,23 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML5>
 <html>
 <head>
-    <meta name="viewport" content="user-scalable=no,width=device-width"/>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+               $(document).bind('mobileinit',function(){
+                   $.mobile.changePage.defaults.changeHash = false;
+                   $.mobile.hashListeningEnabled = false;
+                   $.mobile.pushStateEnabled = false;
+               });
+
+    </script>
+    <script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>-->
+    <!--<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>-->
+    <!--<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
     <script src="fotografias.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
 </head>
 <body>
 <div data-role="page">

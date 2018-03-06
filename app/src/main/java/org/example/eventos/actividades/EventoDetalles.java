@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,20 +79,26 @@ public class EventoDetalles extends AppCompatActivity {
         evento = extras.getString("evento");
         if (evento == null) evento = "";
 
-        ((EventosAplicacion)getApplication()).getFirebaseAnalytics().setUserProperty("evento_detalle", evento);
+        ((EventosAplicacion) getApplication()).getFirebaseAnalytics().setUserProperty("evento_detalle", evento);
 
         registros = FirebaseFirestore.getInstance().collection("eventos");
         registros.document(evento).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    txtEvento.setText(task.getResult().get("evento").toString());
-                    txtCiudad.setText(task.getResult().get("ciudad").toString());
-                    txtFecha.setText(task.getResult().get("fecha").toString());
+                    if (task.getResult().exists()) {
+                        txtEvento.setText(task.getResult().get("evento").toString());
+                        txtCiudad.setText(task.getResult().get("ciudad").toString());
+                        txtFecha.setText(task.getResult().get("fecha").toString());
 
-                    Object img = task.getResult().get("imagen");
-                    if (img != null && !img.toString().isEmpty())
-                        new DownloadImageTask((ImageView) imgImagen).execute(task.getResult().get("imagen").toString());
+                        Object img = task.getResult().get("imagen");
+                        if (img != null && !img.toString().isEmpty())
+                            new DownloadImageTask((ImageView) imgImagen).execute(task.getResult().get("imagen").toString());
+                    } else {
+                        mostrarDialogo(getApplicationContext(), "Error! Evento no Existe!");
+                        finish();
+
+                    }
                 }
             }
         });
@@ -234,7 +241,7 @@ public class EventoDetalles extends AppCompatActivity {
     private void solicitudEliminarFirebase() {
         try {
 
-            final ProgressDialog progresoSubida = ProgressDialog.show(EventoDetalles.this, "Espere ...", "Eliminando Fichero  ...", true);
+            progresoSubida = ProgressDialog.show(EventoDetalles.this, "Espere ...", "Eliminando Fichero  ...", true);
             StorageReference referenciaImagen = getStorageReference().child(evento);
 
             referenciaImagen.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -249,12 +256,12 @@ public class EventoDetalles extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful() && task.getException() == null) {
-                                progresoSubida.dismiss();
+                                hideProgress();
                                 mostrarDialogo(getApplicationContext(), "Imagen eliminada correctamente.");
                                 imgImagen.setImageDrawable(null);
                                 hayImagen = false;
                             } else {
-                                progresoSubida.dismiss();
+                                hideProgress();
                                 mostrarDialogo(getApplicationContext(), "Ha ocurrido un error al borrar la imagen en FireStore.");
                             }
                         }
@@ -264,7 +271,7 @@ public class EventoDetalles extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    progresoSubida.dismiss();
+                    hideProgress();
                     mostrarDialogo(getApplicationContext(), "Ha ocurrido un error al borrar la imagen.");
                 }
             });
@@ -276,6 +283,7 @@ public class EventoDetalles extends AppCompatActivity {
 
 
     private void descargarDeFirebaseStorage(String fichero) {
+
         StorageReference referenciaFichero = getStorageReference().child(fichero);
         File rootPath = new File(Environment.getExternalStorageDirectory(), "Eventos");
         if (!rootPath.exists()) {
@@ -303,11 +311,10 @@ public class EventoDetalles extends AppCompatActivity {
 
     public void subirAFirebaseStorage(Integer opcion, String ficheroDispositivo) {
 
-        final ProgressDialog progresoSubida = new ProgressDialog(EventoDetalles.this);
+        progresoSubida = new
+                ProgressDialog(EventoDetalles.this);
         progresoSubida.setTitle("Subiendo...");
         progresoSubida.setMessage("Espere...");
-        progresoSubida.setMax(100);
-        progresoSubida.setProgress(0);
         progresoSubida.setCancelable(true);
         progresoSubida.setCanceledOnTouchOutside(false);
 
@@ -339,54 +346,13 @@ public class EventoDetalles extends AppCompatActivity {
             }
 
 
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    //UploadTask error
-                    subiendoDatos = false;
-                    mostrarDialogo(getApplicationContext(), "Ha ocurrido un error al subir la imagen o el usuario ha cancelado la subida.");
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //UploadTask exito
-                    Map<String, Object> datos = new HashMap<>();
-                    datos.put("imagen", taskSnapshot.getDownloadUrl().toString());
-                    /// Corregir update
-                    FirebaseFirestore.getInstance().collection("eventos").document(evento).update(datos);
-                    new DownloadImageTask((ImageView) imgImagen).execute(taskSnapshot.getDownloadUrl().toString());
-//                    progresoSubida.dismiss();
-                    hideProgress();
-                    subiendoDatos = false;
-                    hayImagen = true;
-                    mostrarDialogo(getApplicationContext(), "Imagen subida correctamente.");
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    //UploadTask progreso
-                    if (!subiendoDatos) {
-//                        progresoSubida.show();
-                        showProgress();
-                        subiendoDatos = true;
-                    } else {
-                        if (taskSnapshot.getTotalByteCount() > 0)
-                            progresoSubida.setMessage("Espere... " + String.valueOf(100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) + "%");
-                    }
-                }
-            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                    //UploadTask pausa
-                    subiendoDatos = false;
-                    mostrarDialogo(getApplicationContext(), "La subida ha sido pausada.");
-                }
-            });
+            uploadTask.addOnFailureListener(onFailureListener).addOnSuccessListener(onSuccessListenerUpload).addOnProgressListener(onProgressListenerUpload).addOnPausedListener(onPausedListenerUpload);
 
             progresoSubida.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     uploadTask.cancel();
+                    progresoSubida.hide();
                 }
             });
 //            progresoSubida.show();
@@ -399,6 +365,55 @@ public class EventoDetalles extends AppCompatActivity {
         }
     }
 
+    private OnSuccessListener<UploadTask.TaskSnapshot> onSuccessListenerUpload = new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        @Override
+        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            //UploadTask exito
+            Map<String, Object> datos = new HashMap<>();
+            datos.put("imagen", taskSnapshot.getDownloadUrl().toString());
+            /// Corregir update
+            FirebaseFirestore.getInstance().collection("eventos").document(evento).update(datos);
+            new DownloadImageTask((ImageView) imgImagen).execute(taskSnapshot.getDownloadUrl().toString());
+//                    progresoSubida.dismiss();
+            hideProgress();
+            subiendoDatos = false;
+            hayImagen = true;
+            mostrarDialogo(getApplicationContext(), "Imagen subida correctamente.");
+        }
+    };
+    private OnProgressListener<UploadTask.TaskSnapshot> onProgressListenerUpload = new OnProgressListener<UploadTask.TaskSnapshot>() {
+        @Override
+        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+            //UploadTask progreso
+            if (!subiendoDatos) {
+//                        progresoSubida.show();
+                showProgress();
+                subiendoDatos = true;
+            } else {
+                if (taskSnapshot.getTotalByteCount() > 0 && progresoSubida != null) {
+                    progresoSubida.setMessage("Espere... " + String.valueOf(100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) + "%");
+                }
+            }
+        }
+    };
+    private OnFailureListener onFailureListener =new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception exception) {
+            //UploadTask error
+            subiendoDatos = false;
+            mostrarDialogo(getApplicationContext(), "Ha ocurrido un error al subir la imagen o el usuario ha cancelado la subida.");
+        }
+    };
+    private OnPausedListener<UploadTask.TaskSnapshot> onPausedListenerUpload = new OnPausedListener<UploadTask.TaskSnapshot>() {
+        @Override
+        public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+            //UploadTask pausa
+            subiendoDatos = false;
+            mostrarDialogo(getApplicationContext(), "La subida ha sido pausada.");
+        }
+    };
+
+
     private void showProgress() {
         if (progresoSubida != null)
             progresoSubida.show();
@@ -406,8 +421,10 @@ public class EventoDetalles extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        if (progresoSubida != null)
+        if (progresoSubida != null) {
             progresoSubida.dismiss();
+            progresoSubida = null;
+        }
 
     }
 
@@ -454,6 +471,7 @@ public class EventoDetalles extends AppCompatActivity {
         if (imagenRef != null) {
             outState.putString("EXTRA_STORAGE_REFERENCE_KEY", imagenRef.toString());
         }
+        Log.d("EventosDetalle", "onSaveInstaceState:");
     }
 
     @Override
@@ -533,5 +551,18 @@ public class EventoDetalles extends AppCompatActivity {
         mostrarDialogo(getApplicationContext(), "La subida ha sido pausada.");
     }
 
-    final int SOLICITUD_FOTOGRAFIAS_DRIVE = 102;
+//    final int SOLICITUD_FOTOGRAFIAS_DRIVE = 102;
+
+    @Override
+    protected void onDestroy() {
+        hideProgress();
+        if (uploadTask != null) {
+            uploadTask.removeOnSuccessListener(onSuccessListenerUpload);
+            uploadTask.removeOnFailureListener(onFailureListener);
+            uploadTask.removeOnPausedListener(onPausedListenerUpload);
+            uploadTask.removeOnProgressListener(onProgressListenerUpload);
+
+        }
+        super.onDestroy();
+    }
 }

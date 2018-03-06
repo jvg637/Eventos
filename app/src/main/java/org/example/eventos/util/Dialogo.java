@@ -31,7 +31,7 @@ public class Dialogo extends AppCompatActivity {
                             }
                         });
             } else {
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Ver Detalle....",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();

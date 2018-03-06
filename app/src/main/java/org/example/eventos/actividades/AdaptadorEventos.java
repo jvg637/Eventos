@@ -79,8 +79,13 @@ public class AdaptadorEventos extends FirestoreRecyclerAdapter<Evento, Adaptador
             String urldisplay = urls[0];
             Bitmap mImagen = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mImagen = BitmapFactory.decodeStream(in);
+                if (urldisplay != null) {
+                    InputStream in = new java.net.URL(urldisplay).openStream();
+                    mImagen = BitmapFactory.decodeStream(in);
+                } else {
+                    mImagen = null;
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

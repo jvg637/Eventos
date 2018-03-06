@@ -1,14 +1,10 @@
 package org.example.eventos.actividades;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,14 +41,14 @@ public class ActividadPrincipal extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
 //        crearEventos();
         Query query = FirebaseFirestore.getInstance()
@@ -96,9 +92,9 @@ public class ActividadPrincipal extends AppCompatActivity {
         Comun.storage = FirebaseStorage.getInstance();
         Comun.storageRef = storage.getReferenceFromUrl("gs://eventos-eae83.appspot.com");
 
-        // Expose
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+//        // Expose
+//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//        StrictMode.setVmPolicy(builder.build());
 
         ActivityCompat.requestPermissions(ActividadPrincipal.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
@@ -167,12 +163,12 @@ public class ActividadPrincipal extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.action_share_photo) {
-            Intent intent = new Intent(getBaseContext(), ShareFotoDrive.class);
+            Intent intent = new Intent(getBaseContext(), SharedPhotosDrive.class);
             intent.putExtra("accion", "carpeta_compartirda");
             startActivity(intent);
             return true;
         } else if (id == R.id.action_share_reto_estoy_aqui) {
-            Intent intent = new Intent(getBaseContext(), ShareFotoDrive.class);
+            Intent intent = new Intent(getBaseContext(), SharedPhotosDrive.class);
             intent.putExtra("accion", "reto_estoy_aqui");
             startActivity(intent);
             return true;
@@ -194,7 +190,7 @@ public class ActividadPrincipal extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.keySet().size() > 4) {
+        if (extras != null && extras.keySet().size() > 5) {
             String evento = "";
             evento = "Evento: " + extras.getString("evento") + "\n";
             evento = evento + "Día: " + extras.getString("dia") + "\n";
