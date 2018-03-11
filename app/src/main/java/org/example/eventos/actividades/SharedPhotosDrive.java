@@ -351,11 +351,7 @@ public class SharedPhotosDrive extends AppCompatActivity {
                     try {
                         mostrarCarga(SharedPhotosDrive.this, "Listando archivos...");
                         vaciarLista(getBaseContext());
-                        try {
-                            Thread.currentThread().sleep(300);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
                         FileList ficheros = servicio.files().list().setQ("'" + idCarpeta + "' in parents").setFields("*").execute();
 //                  mostrarTexto(getBaseContext(),"", true);
                         List<File> files = ficheros.getFiles();
