@@ -65,17 +65,6 @@ public class EventosWeb extends AppCompatActivity {
         navegador.addJavascriptInterface(miInterfazJava, "jsInterfazNativa");
 
 
-        navegador.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                String url_filtro = "http://www.androidcurso.com/";
-//                if (!url.toString().equals(url_filtro)) {
-//                    view.loadUrl(url_filtro);
-//                }
-                return false;
-            }
-        });
-
 //
 //        barraProgreso = (ProgressBar) findViewById(R.id.barraProgreso);
         navegador.setWebChromeClient(new WebChromeClient() {
@@ -108,6 +97,8 @@ public class EventosWeb extends AppCompatActivity {
         navegador.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (dialogo!=null)
+                    dialogo.dismiss();
                 dialogo = new ProgressDialog(EventosWeb.this);
                 dialogo.setMessage("Cargando...");
                 dialogo.setCancelable(true);
@@ -148,6 +139,15 @@ public class EventosWeb extends AppCompatActivity {
                 builder.setMessage(description).setPositiveButton("Aceptar",
                         null).setTitle("onReceivedError");
                 builder.show();
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                String url_filtro = "http://www.androidcurso.com/";
+//                if (!url.toString().equals(url_filtro)) {
+//                    view.loadUrl(url_filtro);
+//                }
+                return false;
             }
 
         });
