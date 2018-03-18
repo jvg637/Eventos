@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.eventos.util.Comun.acercaDe;
 import static org.example.eventos.util.Comun.getStorageReference;
 import static org.example.eventos.util.Comun.mostrarDialogo;
 
@@ -77,31 +78,36 @@ public class EventoDetalles extends AppCompatActivity {
         imgImagen = (ImageView) findViewById(R.id.imgImagen);
         Bundle extras = getIntent().getExtras();
         evento = extras.getString("evento");
-        if (evento == null) evento = "";
+        if (evento==null) {
+            android.net.Uri url = getIntent().getData();
+            evento= url.getQueryParameter("evento");
+        }
 
         ((EventosAplicacion) getApplication()).getFirebaseAnalytics().setUserProperty("evento_detalle", evento);
 
         registros = FirebaseFirestore.getInstance().collection("eventos");
-        registros.document(evento).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().exists()) {
-                        txtEvento.setText(task.getResult().get("evento").toString());
-                        txtCiudad.setText(task.getResult().get("ciudad").toString());
-                        txtFecha.setText(task.getResult().get("fecha").toString());
+        if (!evento.isEmpty()) {
+            registros.document(evento).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().exists()) {
+                            txtEvento.setText(task.getResult().get("evento").toString());
+                            txtCiudad.setText(task.getResult().get("ciudad").toString());
+                            txtFecha.setText(task.getResult().get("fecha").toString());
 
-                        Object img = task.getResult().get("imagen");
-                        if (img != null && !img.toString().isEmpty())
-                            new DownloadImageTask((ImageView) imgImagen).execute(task.getResult().get("imagen").toString());
-                    } else {
-                        mostrarDialogo(getApplicationContext(), "Error! Evento no Existe!");
-                        finish();
+                            Object img = task.getResult().get("imagen");
+                            if (img != null && !img.toString().isEmpty())
+                                new DownloadImageTask((ImageView) imgImagen).execute(task.getResult().get("imagen").toString());
+                        } else {
+                            mostrarDialogo(getApplicationContext(), "Error! Evento no Existe!");
+                            finish();
 
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -132,6 +138,7 @@ public class EventoDetalles extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }
+
     }
 
     final int SOLICITUD_SUBIR_PUTDATA = 0;
@@ -146,6 +153,10 @@ public class EventoDetalles extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detalles, menu);
+
+        if (!acercaDe) {
+            menu.removeItem(R.id.action_acercaDe);
+        }
         return true;
     }
 
@@ -216,8 +227,6 @@ public class EventoDetalles extends AppCompatActivity {
                 intentWeb.putExtra("evento", evento);
                 startActivity(intentWeb);
                 break;
-
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -396,7 +405,7 @@ public class EventoDetalles extends AppCompatActivity {
             }
         }
     };
-    private OnFailureListener onFailureListener =new OnFailureListener() {
+    private OnFailureListener onFailureListener = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception exception) {
             //UploadTask error

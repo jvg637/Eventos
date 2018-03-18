@@ -1,6 +1,6 @@
 var evento="";
 var wiki="";
-function muestraEvento(mEvento){
+function muestraEvento(mEvento, mDescuento){
  switch (mEvento){
  case "carnaval":
  evento ="Carnaval";
@@ -45,14 +45,27 @@ function muestraEvento(mEvento){
  default:
  wiki ="No se encuentra el evento";
  }
- muestra(evento,wiki);
+ muestra(evento,wiki, mEvento, mDescuento);
 }
 
-function muestra(mEvento, mWiki){
+function muestra(mEvento, mWiki, mEventoOriginal,mDescuento){
  document.getElementById("evento").innerHTML=mEvento;
  document.getElementById("wiki").innerHTML=mWiki;
+
+ if (mDescuento>0) {
+     document.getElementById("descuento").innerHTML ="Ha conseguido un descuento de " + mDescuento + "%";
+ }else {
+    document.getElementById("descuento").style.visibility="hidden";
+ }
+ document.getElementById("enlace").href='https://us-central1-eventos-eae83.cloudfunctions.net/mostrarEventosHtml?evento=' + mEventoOriginal;
 }
 
 function volver(){
     jsInterfazNativa.volver();
+}
+
+function colorFondo(color){
+// document.body.style.backgroundColor = color;
+  document.getElementById("pagina1").style.backgroundColor = color;
+
 }

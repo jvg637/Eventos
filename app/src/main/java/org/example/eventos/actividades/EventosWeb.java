@@ -30,6 +30,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.example.eventos.util.Comun.colorFondo;
+
 public class EventosWeb extends AppCompatActivity {
 
     WebView navegador;
@@ -40,6 +42,8 @@ public class EventosWeb extends AppCompatActivity {
 
 
     final InterfazComunicacion miInterfazJava = new InterfazComunicacion(this);
+    String evento;
+    float descuento = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,13 @@ public class EventosWeb extends AppCompatActivity {
 //        btnSiguiente = (Button) findViewById(R.id.btnSiguiente);
 //        txtDireccion = (EditText) findViewById(R.id.txtDireccion);
 
-        final String evento = getIntent().getStringExtra("evento");
+        evento = getIntent().getStringExtra("evento");
+
+        if (evento == null) {
+            android.net.Uri url = getIntent().getData();
+            evento = url.getQueryParameter("evento");
+            descuento = Float.parseFloat(url.getQueryParameter("descuento"));
+        }
 
         navegador = (WebView) findViewById(R.id.webkit);
         navegador.getSettings().setJavaScriptEnabled(true);
@@ -60,8 +70,8 @@ public class EventosWeb extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-//        navegador.loadUrl("file:///android_asset/index.html");
-        navegador.loadUrl("https://eventos-eae83.firebaseapp.com/index.html");
+        navegador.loadUrl("file:///android_asset/index.html");
+//        navegador.loadUrl("https://eventos-eae83.firebaseapp.com/index.html");
         navegador.addJavascriptInterface(miInterfazJava, "jsInterfazNativa");
 
 
@@ -97,7 +107,7 @@ public class EventosWeb extends AppCompatActivity {
         navegador.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                if (dialogo!=null)
+                if (dialogo != null)
                     dialogo.dismiss();
                 dialogo = new ProgressDialog(EventosWeb.this);
                 dialogo.setMessage("Cargando...");
@@ -128,7 +138,8 @@ public class EventosWeb extends AppCompatActivity {
 //                } else {
 //                    btnSiguiente.setEnabled(false);
 //                }
-                navegador.loadUrl("javascript:muestraEvento(\"" + evento + "\");");
+                navegador.loadUrl("javascript:muestraEvento(\"" + evento + "\" ," + descuento + ");");
+                navegador.loadUrl("javascript:colorFondo(\""+colorFondo+"\")");
             }
 
             @Override

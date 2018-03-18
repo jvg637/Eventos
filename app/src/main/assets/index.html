@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no"/>
-    <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/></script>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+    </script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script>
                $(document).bind('mobileinit',function(){
                    $.mobile.changePage.defaults.changeHash = false;
@@ -12,8 +13,11 @@
                    $.mobile.pushStateEnabled = false;
                });
 
+
+
+
     </script>
-    <script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <!--<link href="estilos.css" rel="stylesheet" type="text/css">-->
     <script src="funciones.js"></script>
 </head>
@@ -39,6 +43,11 @@
     </div>
     <div data-role="content">
         <p id="wiki"></p>
+        <p>
+            <a id="descuento" href="#" data-role="button" data-icon="eye" data-transition="pop"></a>
+        </p>
+        <a id="enlace" href="#" data-role="button" data-icon="calendar" data-transition="pop">Mostrar
+            Día y Lugar del Evento</a>
     </div>
     <div data-role="footer" data-position="fixed"><h1>DEU UPV</h1></div>
 </div>
@@ -47,11 +56,16 @@
     <!--<p>Curso DEU UPV</p>-->
     <!--<p>Master UPV</p>-->
     <!--<p>Curso Firebase UPV</p>-->
-    <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="https://www.cfp.upv.es/formacion-permanente/cursos/d-e-u-en-diseno-creativo-de-videojuegos--programacion-de-videojuegos_idiomaes-menuupvtrue-cid33935.html" >DEU UPV</a>
-    <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="https://www.upv.es/estudios/posgrado/index-es.html">Master UPV</a>
-    <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="https://www.cfp.upv.es/formacion-permanente/cursos/firebase-y-arquitecturas-de-software-en-android_idiomaes-cid51554.html">Curso Firebase UPV</a>
+    <a data-role="button" data-icon="arrow-r" data-iconpos="right"
+       href="https://www.cfp.upv.es/formacion-permanente/cursos/d-e-u-en-diseno-creativo-de-videojuegos--programacion-de-videojuegos_idiomaes-menuupvtrue-cid33935.html">DEU
+        UPV</a>
+    <a data-role="button" data-icon="arrow-r" data-iconpos="right"
+       href="https://www.upv.es/estudios/posgrado/index-es.html">Master UPV</a>
+    <a data-role="button" data-icon="arrow-r" data-iconpos="right"
+       href="https://www.cfp.upv.es/formacion-permanente/cursos/firebase-y-arquitecturas-de-software-en-android_idiomaes-cid51554.html">Curso
+        Firebase UPV</a>
 
-    <a href="#pagina1"  data-mini="true" data-role="button" data-icon="back"
+    <a href="#pagina1" data-mini="true" data-role="button" data-icon="back"
        data-transition="slidefade">Volver</a>
 </div>
 </body>

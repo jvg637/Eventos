@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".actividades.ActividadPrincipal">
     <item
+        android:id="@+id/action_invitar"
+        android:orderInCategory="50"
+        android:title="Invitar"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_temas"
         android:orderInCategory="100"
         android:title="Suscripciones"
@@ -22,5 +27,10 @@
         android:id="@+id/action_share_reto_estoy_aqui"
         android:orderInCategory="103"
         android:title="Reto “Estoy aquí” "
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_error"
+        android:orderInCategory="101"
+        android:title="Error"
         app:showAsAction="never" />
 </menu>

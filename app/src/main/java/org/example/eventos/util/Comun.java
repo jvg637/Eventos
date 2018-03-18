@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -158,5 +159,10 @@ public class Comun {
     public static StorageReference getStorageReference() {
         return storageRef;
     }
+
+
+    public static FirebaseRemoteConfig mFirebaseRemoteConfig;
+    public static String colorFondo;
+    public static Boolean acercaDe;
 }
 
