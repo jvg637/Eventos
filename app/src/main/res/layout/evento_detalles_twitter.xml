@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".actividades.redessociales.FacebookTwitter">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="API Twitter" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_layout_twitter"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/twitter_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Introduce Texto">
+
+            <EditText
+                android:id="@+id/txt_mensajeFB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/boton_EnviarATwitter"
+                android:layout_width="0dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:onClick="publicarTextoConTwitter"
+                android:text="Enviar Texto"
+                android:textColor="@color/tw__solid_white" />
+
+            <Button
+                android:id="@+id/boton_EnviarATwitterImagen"
+                android:layout_width="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:onClick="publicarFotoConTwitter"
+                android:text="Enviar Imagen"
+                android:textColor="@color/tw__solid_white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="API Buider (Composer)" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_layout_twitter"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Introduce Texto">
+
+            <EditText
+                android:id="@+id/txt_mensajeComposer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/boton_EnviarATwitter_builder"
+            android:layout_width="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:onClick="envia_texto_TweetComposer"
+            android:textColor="@color/tw__solid_white"
+            android:text="Enviar Texto" />
+
+        <Button
+            android:id="@+id/boton_EnviarATwitterImagen_builder"
+            android:layout_width="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:onClick="envia_imagen_TweetComposer"
+            android:textColor="@color/tw__solid_white"
+            android:text="Enviar Imagen" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

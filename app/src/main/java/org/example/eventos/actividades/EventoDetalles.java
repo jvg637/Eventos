@@ -54,6 +54,10 @@ import static org.example.eventos.util.Comun.acercaDe;
 import static org.example.eventos.util.Comun.getStorageReference;
 import static org.example.eventos.util.Comun.mostrarDialogo;
 
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
+
+
 /**
  * Created by jvg63 on 18/02/2018.
  */
@@ -63,7 +67,7 @@ public class EventoDetalles extends AppCompatActivity {
     ImageView imgImagen;
     String evento;
     CollectionReference registros;
-
+    Trace mTrace;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +112,20 @@ public class EventoDetalles extends AppCompatActivity {
                 }
             });
         }
+
+        mTrace =
+                FirebasePerformance.getInstance().newTrace("trace_EventoDetalles");
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mTrace.start();
+    }
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mTrace.stop();
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -154,7 +172,7 @@ public class EventoDetalles extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detalles, menu);
 
-        if (!acercaDe) {
+        if (acercaDe!=null && !acercaDe) {
             menu.removeItem(R.id.action_acercaDe);
         }
         return true;
@@ -227,6 +245,37 @@ public class EventoDetalles extends AppCompatActivity {
                 intentWeb.putExtra("evento", evento);
                 startActivity(intentWeb);
                 break;
+            case R.id.action_publicarFacebook:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "publicar_facebook");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+                Intent intentFb = new Intent(getBaseContext(), EventosFacebook.class);
+                intentFb.putExtra("evento", evento);
+                startActivity(intentFb);
+                break;
+            case R.id.action_publicarTwitter:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "publicar_twitter");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+                Intent intentTw = new Intent(getBaseContext(), EventosTwitter.class);
+                intentTw.putExtra("evento", evento);
+                startActivity(intentTw);
+                break;
+
+            case R.id.action_publicarInstagram:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "publicar_instagram");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+                Intent intentInstagram;
+                intentInstagram = new Intent(getBaseContext(), EventosInstagram.class);
+                intentInstagram.putExtra("evento", evento);
+                startActivity(intentInstagram);
+                break;
+            case R.id.action_publicarWhatsapp:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "publicar_whatsapp");
+                mFirebaseAnalytics.logEvent("menus", bundle);
+                Intent intentWhatsapp= new Intent(getBaseContext(), EventosWhatsapp.class);
+                intentWhatsapp.putExtra("evento", evento);
+                startActivity(intentWhatsapp);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }

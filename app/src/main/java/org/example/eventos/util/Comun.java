@@ -2,8 +2,10 @@ package org.example.eventos.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -46,6 +48,8 @@ public class Comun {
 
 
     String idRegistro = "";
+
+
 
     public static class registrarDispositivoEnServidorWebTask
             extends AsyncTask<Void, Void, String> {
@@ -164,5 +168,6 @@ public class Comun {
     public static FirebaseRemoteConfig mFirebaseRemoteConfig;
     public static String colorFondo;
     public static Boolean acercaDe;
+    public static int performingMonitor;
 }
 

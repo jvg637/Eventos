@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".actividades.redessociales.FacebookTwitter">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="API Graph" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_layout_fb"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                facebook:com_facebook_confirm_logout="false"
+                facebook:com_facebook_tooltip_mode="never_display" />
+
+
+            <Button
+                android:id="@+id/boton_hacerLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="boton_Login_pulsado"
+                android:text="Do Login"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/boton_LogOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="boton_Logout_pulsado"
+                android:text="Log out"
+                android:visibility="gone" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/elTextoDeBienvenida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Texto Bienvenida" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Introduce Texto">
+
+            <EditText
+                android:id="@+id/txt_mensajeFB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/boton_EnviarFoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/tw__solid_white"
+                android:onClick="boton_enviarImagen_pulsado"
+                android:text="Enviar Foto"
+                />
+
+            <Button
+                android:id="@+id/boton_EnviarAFB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:onClick="boton_enviarTextoAFB_pulsado"
+                android:text="Enviar Texto"
+                android:textColor="@color/tw__solid_white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Share Dialog" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/border_layout_fb"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+
+        <!--<Button-->
+        <!--android:id="@+id/button1"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:onClick="boton1_pulsado"-->
+        <!--android:text="MensajeConIntent" />-->
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:onClick="boton2_pulsado"
+            android:text="Enviar Mensaje"
+            android:textColor="@color/tw__solid_white" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:onClick="boton3_pulsado"
+            android:text="Enviar Imagen"
+            android:textColor="@color/tw__solid_white" />
+
+        <TextView
+            android:id="@+id/textoSalida1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

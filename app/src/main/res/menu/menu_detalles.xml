@@ -43,4 +43,28 @@
         android:orderInCategory="105"
         android:title="Acerca de"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_publicarFacebook"
+        android:orderInCategory="106"
+        android:title="Red Social Facebook"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_publicarTwitter"
+        android:orderInCategory="107"
+        android:title="Red Social Twitter"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_publicarInstagram"
+        android:orderInCategory="107"
+        android:title="Red Social Instagram"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_publicarWhatsapp"
+        android:orderInCategory="108"
+        android:title="Envia Whatsapp"
+        app:showAsAction="never" />
 </menu>

@@ -10,15 +10,31 @@ import android.support.v7.app.AppCompatActivity;
 /**
  * Created by jvg63 on 25/02/2017.
  */
+
 public class DialogoConfirmacion extends AppCompatActivity {
+    AlertDialog alertDialog = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Mensaje:");
 
-        alertDialog.setMessage("¿Desea eliminar la portada del evento?");
+        Intent datos = getIntent();
+        String tipoMensaje = "";
+
+        if (datos.getExtras() != null) {
+
+            tipoMensaje = datos.getExtras().getString("tipoMensaje", "");
+
+        }
+
+        String textoMensaje = tipoMensaje.isEmpty() ? "¿Desea eliminar la portada del evento?" : "“Con el fin de mejorar la aplicación, te pedimos que participes en el envío\n" +
+                "automático de errores a nuestros servidores. ¿Estás de acuerdo?”";
+
+        alertDialog.setCancelable(false);
+        alertDialog.setMessage(textoMensaje);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, ("Aceptar"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -40,4 +56,6 @@ public class DialogoConfirmacion extends AppCompatActivity {
         });
         alertDialog.show();
     }
+
+
 }

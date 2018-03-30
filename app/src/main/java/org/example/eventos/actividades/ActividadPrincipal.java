@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,13 +42,17 @@ import org.example.eventos.EventosAplicacion;
 import org.example.eventos.R;
 import org.example.eventos.modelo.Evento;
 import org.example.eventos.util.Comun;
+import org.example.eventos.util.DialogoConfirmacion;
 
 import static org.example.eventos.modelo.EventosFirestore.EVENTOS;
 import static org.example.eventos.util.Comun.mFirebaseRemoteConfig;
 import static org.example.eventos.util.Comun.mostrarDialogo;
+import static org.example.eventos.util.Comun.mostrarDialogo2;
+import static org.example.eventos.util.Comun.performingMonitor;
 import static org.example.eventos.util.Comun.storage;
 
 import com.crashlytics.android.Crashlytics;
+
 import io.fabric.sdk.android.Fabric;
 
 public class ActividadPrincipal extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -59,7 +65,7 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
-        Fabric.with(this, new Crashlytics());
+//        Fabric.with(this, new Crashlytics());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -166,13 +172,16 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
                         mFirebaseRemoteConfig.activateFetched();
                         getColorFondo();
                         getAcercaDe();
+                        getPerformingMonitor();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Comun.colorFondo=mFirebaseRemoteConfig.getString("color_fondo");
-                        Comun.acercaDe=mFirebaseRemoteConfig.getBoolean("acerca_de");
+                        Comun.colorFondo = mFirebaseRemoteConfig.getString("color_fondo");
+                        Comun.acercaDe = mFirebaseRemoteConfig.getBoolean("acerca_de");
+                        Comun.performingMonitor = (int) mFirebaseRemoteConfig.getLong("PerformanceMonitoring");
+                        inicitializeFirebasePeformanceOrNot();
                     }
                 });
     }
@@ -180,9 +189,25 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
     private void getColorFondo() {
         Comun.colorFondo = mFirebaseRemoteConfig.getString("color_fondo");
     }
+
     private void getAcercaDe() {
         Comun.acercaDe = mFirebaseRemoteConfig.getBoolean("acerca_de");
     }
+
+    private void getPerformingMonitor() {
+        Comun.performingMonitor = (int) mFirebaseRemoteConfig.getLong("PerformanceMonitoring");
+
+        inicitializeFirebasePeformanceOrNot();
+    }
+
+    private void inicitializeFirebasePeformanceOrNot() {
+        if (Comun.performingMonitor == 1) {
+            FirebasePerformance.getInstance().setPerformanceCollectionEnabled(true);
+        } else {
+            FirebasePerformance.getInstance().setPerformanceCollectionEnabled(false);
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -217,12 +242,27 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
                 if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     Toast.makeText(ActividadPrincipal.this, "Permiso denegado para conocer el estado de la red.", Toast.LENGTH_SHORT).show();
                 }
-                return;
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                if (!prefs.contains("participate_fails")) {
+                    Intent i = new Intent(this, DialogoConfirmacion.class);
+                    i.putExtra("tipoMensaje", "participate_fails");
+                    startActivityForResult(i, SOLICITUD_CONFIRMAR_PARTICIPAR_FALLOS);
+                } else {
+
+                    boolean showAlertFails = prefs.getBoolean("participate_fails", false);
+                    if (showAlertFails)
+                        Fabric.with(this, new Crashlytics());
+
+                }
             }
 
-
+            return;
         }
+
     }
+
+    final int SOLICITUD_CONFIRMAR_PARTICIPAR_FALLOS = 1103;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -287,6 +327,18 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
                 Toast.makeText(this, "Error al enviar la invitación",
                         Toast.LENGTH_LONG);
             }
+        } else if (requestCode == SOLICITUD_CONFIRMAR_PARTICIPAR_FALLOS) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = defaultSharedPreferences.edit();
+            if (resultCode == RESULT_OK) {
+                editor.putBoolean("participate_fails", true);
+
+                Fabric.with(this, new Crashlytics());
+            } else {
+
+                editor.putBoolean("participate_fails", false);
+            }
+            editor.commit();
         }
     }
 //    @Override

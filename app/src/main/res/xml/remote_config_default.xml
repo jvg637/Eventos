@@ -13,4 +13,9 @@
         <key>pais</key>
         <value>false</value>
     </entry>
+
+    <entry>
+        <key>PerformanceMonitoring</key>
+        <value>0</value>
+    </entry>
 </defaultsMap>

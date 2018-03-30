@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:text=""
+        android:hint="Introduce Texto a Enviar"
+        android:onClick="click_publicar_whatsapp"
+        android:layout_height="wrap_content" >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_whatsapp"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="click_publicar_whatsapp"
+        android:textColor="@color/tw__solid_white"
+        android:background="@color/colorPrimary"
+        android:text="Enviar Whatsapp" />
+</LinearLayout>
