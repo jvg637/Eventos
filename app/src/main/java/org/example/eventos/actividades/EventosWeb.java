@@ -70,8 +70,8 @@ public class EventosWeb extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        navegador.loadUrl("file:///android_asset/index.html");
-//        navegador.loadUrl("https://eventos-eae83.firebaseapp.com/index.html");
+//        navegador.loadUrl("file:///android_asset/index.html");
+        navegador.loadUrl("https://eventos-eae83.firebaseapp.com/index.html");
         navegador.addJavascriptInterface(miInterfazJava, "jsInterfazNativa");
 
 

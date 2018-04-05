@@ -67,5 +67,6 @@ function volver(){
 function colorFondo(color){
 // document.body.style.backgroundColor = color;
   document.getElementById("pagina1").style.backgroundColor = color;
+  document.getElementById("pagina1").style.color = "gray";
 
 }

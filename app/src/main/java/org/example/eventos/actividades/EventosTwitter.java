@@ -60,6 +60,7 @@ public class EventosTwitter extends AppCompatActivity {
     private TextView textoConElMensaje;
     private TextView textoConElMensajeComposer;
 
+    private TextView elTextoDeBienvenida;
     private final Activity THIS = this;
     private Button botonEnviarATwitter;
     private Button botonEnviarImagenATwitter;
@@ -94,6 +95,8 @@ public class EventosTwitter extends AppCompatActivity {
                 .build();
         Twitter.initialize(config);
 
+        elTextoDeBienvenida = (TextView) findViewById(
+                R.id.elTextoDeBienvenida);
         textoConElMensaje = (TextView) findViewById(R.id.txt_mensajeFB);
         botonEnviarATwitter = (Button) findViewById(R.id.boton_EnviarATwitter);
         botonEnviarImagenATwitter = (Button) findViewById(R.id.boton_EnviarATwitterImagen);
@@ -106,6 +109,8 @@ public class EventosTwitter extends AppCompatActivity {
                 Toast.makeText(THIS, "Autenticado en twitter: " + result.data.getUserName(),
                         Toast.LENGTH_LONG).show();
 
+
+                elTextoDeBienvenida.setText("Bienvenido 2018: " + result.data.getUserName());
                 habilitaBotones(true);
 
 
@@ -124,11 +129,11 @@ public class EventosTwitter extends AppCompatActivity {
 
     private void habilitaBotones(boolean habilita) {
         if (habilita) {
-
             textoConElMensaje.setEnabled(true);
             botonEnviarATwitter.setEnabled(true);
             botonEnviarImagenATwitter.setEnabled(true);
         } else {
+            elTextoDeBienvenida.setText("Haz login");
             textoConElMensaje.setText("");
             textoConElMensaje.setEnabled(false);
             botonEnviarATwitter.setEnabled(false);
@@ -159,7 +164,9 @@ public class EventosTwitter extends AppCompatActivity {
             }
 
         } else if (requestCode == SELECCIONAR_FOTO_TWITTER_API) {
-            envia_imagen_Tweetapi(data.getData());
+            if (resultCode == RESULT_OK) {
+                envia_imagen_Tweetapi(data.getData());
+            }
         }
     }
 

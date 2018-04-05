@@ -121,6 +121,7 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
         Comun.storage = FirebaseStorage.getInstance();
         Comun.storageRef = storage.getReferenceFromUrl("gs://eventos-eae83.appspot.com");
 
+
 //        // Expose
 //        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
 //        StrictMode.setVmPolicy(builder.build());
