@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -509,7 +510,8 @@ public class FacebookTwitter extends AppCompatActivity {
         }
         // llamar a share dialog aunque utilizamos ShareLinkContent,
         // al no poner link publica un mensaje
-        ShareLinkContent content = new ShareLinkContent.Builder().build();
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .build();
         this.elShareDialog.show(content);
     }
 
@@ -568,39 +570,39 @@ public class FacebookTwitter extends AppCompatActivity {
             Log.d("miApp", "enviarImagen : excepcion: " + e.getMessage());
             return;
         }
-    // 2. ponemos el fichero en un TypedFile
-            TypedFile typedFile = new TypedFile("image/jpg", photo);
-    // 3. obtenemos referencia al media service
-            MediaService ms = TwitterCore.getInstance().getApiClient().getMediaService();
-            // 3.1 ponemos la foto en el request body de la petición
-            okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(
-                    MediaType.parse("image/png"), photo);
-    // 4. con el media service: enviamos la foto a Twitter
-            Call<Media> call1 = ms.upload(
-                    requestBody, // foto que enviamos
-                    null, null);
-            call1.enqueue(new Callback<Media>() {
-                @Override
-                public void success(Result<Media> mediaResult) {
-                    // he tenido éxito:
-                    Toast.makeText(THIS, "imagen publicada: " +
-                            mediaResult.response.toString(), Toast.LENGTH_LONG);
-                    // 5. como he tenido éxito, la foto está en twitter, pero no en el
-                    // timeline (no se ve) he de escribir un tweet referenciando la foto
-                    // 6. obtengo referencia al status service
-                    StatusesService statusesService = TwitterCore.getInstance()
-                            .getApiClient().getStatusesService();
-                    // 7. publico un tweet
-                    Call<Tweet> call2 = statusesService.update(
-                            "prueba de enviar imagen"
-                                    + System.currentTimeMillis(),
-                            // mensaje del tweet
-                            null, false, null, null, null, true, false,
-                            "" + mediaResult.data.mediaId
-                            // string con los identicadores (hasta 4, separado
-                            //por coma) de las imágenes
-    // que quiero que aparezcan en este tweet. El mediaId
-    // referencia a la foto que acabo de subir previamente
+        // 2. ponemos el fichero en un TypedFile
+        TypedFile typedFile = new TypedFile("image/jpg", photo);
+        // 3. obtenemos referencia al media service
+        MediaService ms = TwitterCore.getInstance().getApiClient().getMediaService();
+        // 3.1 ponemos la foto en el request body de la petición
+        okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(
+                MediaType.parse("image/png"), photo);
+        // 4. con el media service: enviamos la foto a Twitter
+        Call<Media> call1 = ms.upload(
+                requestBody, // foto que enviamos
+                null, null);
+        call1.enqueue(new Callback<Media>() {
+            @Override
+            public void success(Result<Media> mediaResult) {
+                // he tenido éxito:
+                Toast.makeText(THIS, "imagen publicada: " +
+                        mediaResult.response.toString(), Toast.LENGTH_LONG);
+                // 5. como he tenido éxito, la foto está en twitter, pero no en el
+                // timeline (no se ve) he de escribir un tweet referenciando la foto
+                // 6. obtengo referencia al status service
+                StatusesService statusesService = TwitterCore.getInstance()
+                        .getApiClient().getStatusesService();
+                // 7. publico un tweet
+                Call<Tweet> call2 = statusesService.update(
+                        "prueba de enviar imagen"
+                                + System.currentTimeMillis(),
+                        // mensaje del tweet
+                        null, false, null, null, null, true, false,
+                        "" + mediaResult.data.mediaId
+                        // string con los identicadores (hasta 4, separado
+                        //por coma) de las imágenes
+                        // que quiero que aparezcan en este tweet. El mediaId
+                        // referencia a la foto que acabo de subir previamente
                 );
                 call2.enqueue(new Callback<Tweet>() {
                     @Override

@@ -41,9 +41,6 @@
             android:name="firebase_performance_collection_enabled"
             android:value="false" />
         <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-        <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notification" />
         <meta-data
@@ -116,8 +113,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="eventos-eae83.firebaseapp.com"
-                    android:scheme="https" />
+                    android:host="eventos-eae83.firebaseapp.com" android:scheme="https" />
             </intent-filter>
             <intent-filter>
                 <action android:name="OPEN_ACTIVITY_1" />
@@ -156,9 +152,9 @@
         </activity>
         <activity android:name=".actividades.SplashScreen">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".actividades.redessociales.FacebookTwitter">
@@ -171,15 +167,23 @@
 
         <activity android:name=".actividades.redessociales.Instagram">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity android:label="Whatsapp" android:name=".actividades.EventosWhatsapp" />
-        <activity android:label="Instagram" android:name=".actividades.EventosInstagram" />
-        <activity android:label="Facebook" android:name=".actividades.EventosFacebook" />
-        <activity android:label="Twitter"  android:name=".actividades.EventosTwitter" />
+        <activity
+            android:name=".actividades.EventosWhatsapp"
+            android:label="Whatsapp" />
+        <activity
+            android:name=".actividades.EventosInstagram"
+            android:label="Instagram" />
+        <activity
+            android:name=".actividades.EventosFacebook"
+            android:label="Facebook" />
+        <activity
+            android:name=".actividades.EventosTwitter"
+            android:label="Twitter" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

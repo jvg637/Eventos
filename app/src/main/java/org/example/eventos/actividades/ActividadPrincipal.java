@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -147,9 +148,10 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
                                             .getInvitationId(intent);
                                     android.net.Uri url = Uri.parse(deepLink);
                                     String descuento = url.getQueryParameter("descuento");
-                                    mostrarDialogo(getApplicationContext(),
-                                            "Tienes un descuento del " + descuento
-                                                    + "% gracias a la invitación: " + invitationId);
+                                    if (descuento != null && invitationId != null)
+                                        mostrarDialogo(getApplicationContext(),
+                                                "Tienes un descuento del " + descuento
+                                                        + "% gracias a la invitación: " + invitationId);
                                 }
                             }
                         });
@@ -324,6 +326,11 @@ public class ActividadPrincipal extends AppCompatActivity implements GoogleApiCl
         if (requestCode == REQUEST_INVITE) {
             if (resultCode == RESULT_OK) {
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+
+                for (String idInvitacion : ids) {
+
+                    Log.d("INVITACION", "idInvitacion=" + idInvitacion);
+                }
             } else {
                 Toast.makeText(this, "Error al enviar la invitación",
                         Toast.LENGTH_LONG);

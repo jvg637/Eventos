@@ -26,7 +26,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="90dp"
         android:gravity="center_vertical"
-        android:text="Esta aplicación muestra sólo eventos de España"
+        android:text=""
         android:textColor="@color/colorAccent"
         android:textSize="20sp"
         android:textStyle="bold"

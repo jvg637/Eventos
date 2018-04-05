@@ -62,8 +62,11 @@ public class SplashScreen extends AppCompatActivity {
                 mFirebaseRemoteConfig.activateFetched();
                 regionDesarrollo = mFirebaseRemoteConfig.getBoolean("pais");
 
+                txtAdvertencia.setVisibility(View.VISIBLE);
                 if (regionDesarrollo != null && regionDesarrollo) {
-                    txtAdvertencia.setVisibility(View.VISIBLE);
+                    txtAdvertencia.setText("Esta aplicación muestra información sobre eventos");
+                } else {
+                    txtAdvertencia.setText("Esta aplicación muestra eventos de España");
                 }
 
             }

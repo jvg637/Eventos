@@ -90,7 +90,7 @@ public class EventoDetalles extends AppCompatActivity {
         ((EventosAplicacion) getApplication()).getFirebaseAnalytics().setUserProperty("evento_detalle", evento);
 
         registros = FirebaseFirestore.getInstance().collection("eventos");
-        if (!evento.isEmpty()) {
+        if (evento!=null && !evento.isEmpty()) {
             registros.document(evento).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
