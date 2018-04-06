@@ -195,7 +195,9 @@ public class EventosFacebook extends AppCompatActivity {
             }
         } else if (requestCode == SELECCIONAR_FOTO_SHARED_DIALOG) {
             {
-                this.publicarFotoConShareDialog(data.getData());
+                if (resultCode == RESULT_OK) {
+                    this.publicarFotoConShareDialog(data.getData());
+                }
             }
 
         }
@@ -441,7 +443,7 @@ public class EventosFacebook extends AppCompatActivity {
         // cojo el mensaje que ha escrito el usuario
         //
 
-        String mensaje = "img:" + this.textoConElMensaje.getText() + " :"
+        String mensaje = "Evento:" + elEvento + ", " + this.textoConElMensaje.getText() + " :"
                 + System.currentTimeMillis();
         //
         // llamo al método que publica
@@ -457,7 +459,7 @@ public class EventosFacebook extends AppCompatActivity {
 
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
-            enviarFotoAFacebook_async(bitmap, this.textoConElMensaje.getText().toString());
+            enviarFotoAFacebook_async(bitmap, mensaje);
         } catch (FileNotFoundException e) {
             Toast.makeText(getApplicationContext(), "Error enviando imagen por Facebook", Toast.LENGTH_SHORT).show();
         }

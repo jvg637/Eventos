@@ -78,27 +78,29 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/boton_EnviarFoto"
+                android:id="@+id/boton_EnviarAFB"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:textColor="@color/tw__solid_white"
-                android:onClick="boton_enviarImagen_pulsado"
-                android:text="Enviar Foto"
-                />
-
-            <Button
-                android:id="@+id/boton_EnviarAFB"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary"
                 android:onClick="boton_enviarTextoAFB_pulsado"
                 android:text="Enviar Texto"
                 android:textColor="@color/tw__solid_white" />
+
+            <Button
+                android:id="@+id/boton_EnviarFoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:onClick="boton_enviarImagen_pulsado"
+                android:text="Enviar Foto"
+                android:textColor="@color/tw__solid_white" />
+
+
         </LinearLayout>
     </LinearLayout>
 

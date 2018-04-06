@@ -354,9 +354,8 @@ public class FotografiasDrive extends AppCompatActivity {
         String tiempo = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 .format(new Date());
         String nombreFichero = "JPEG_" + tiempo + "_";
-        java.io.File dirAlmacenaje =
-                new java.io.File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DCIM), "Camera");
+        //        java.io.File dirAlmacenaje =  new java.io.File(Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DCIM), "Camera");
+        java.io.File dirAlmacenaje =  Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DCIM);
         java.io.File ficheroImagen = java.io.File.createTempFile(
                 nombreFichero,
                 ".jpg", dirAlmacenaje);

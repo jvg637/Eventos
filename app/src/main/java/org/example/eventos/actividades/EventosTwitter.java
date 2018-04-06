@@ -280,6 +280,9 @@ public class EventosTwitter extends AppCompatActivity {
             return;
         }
 
+        String mensaje = "Evento:" + elEvento + ", " + this.textoConElMensaje.getText() + " :"
+                + System.currentTimeMillis();
+
         InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.textoConElMensaje
@@ -287,7 +290,7 @@ public class EventosTwitter extends AppCompatActivity {
 
         StatusesService statusesService = TwitterCore.getInstance().getApiClient().getStatusesService();
 
-        Call<Tweet> call = statusesService.update(textoConElMensaje.getText().toString(), null, null,
+        Call<Tweet> call = statusesService.update(mensaje, null, null,
                 null, null, null, null, null, null);
         call.enqueue(new Callback<Tweet>() {
             @Override
