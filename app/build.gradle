@@ -5,6 +5,8 @@ apply plugin: 'com.google.firebase.firebase-perf'
 android {
     compileSdkVersion 27
     defaultConfig {
+        // Enabling multidex support.
+        multiDexEnabled true
         applicationId "org.example.eventos"
         minSdkVersion 15
         targetSdkVersion 27
